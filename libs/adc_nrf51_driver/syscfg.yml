@@ -1,0 +1,27 @@
+# Package: libs/adc_nrf51_driver
+
+syscfg.defs:
+    ADC_0:
+        description: 'TBD'
+        value:  1
+    ADC_0_SAMPLES:
+        description: 'TBD'
+        value: 2
+    ADC_0_INTERRUPT_PRIORITY:
+        description: 'TBD'
+        value: 'ADC_CONFIG_IRQ_PRIORITY'
+    ADC_0_RESOLUTION:
+        description: 'TBD'
+        value: 'NRF_ADC_CONFIG_RES_10BIT'
+    ADC_0_SCALING:
+        description: 'TBD'
+        value: 'NRF_ADC_CONFIG_SCALING_INPUT_FULL_SCALE'
+    ADC_0_REFERENCE:
+        description: 'TBD'
+        value: 'NRF_ADC_CONFIG_REF_VBG'
+    ADC_0_INPUT:
+        description: 'TBD'
+        value: 'NRF_ADC_CONFIG_INPUT_DISABLED'
+    ADC_0_EXTERNAL_REFERENCE:
+        description: 'TBD'
+        value: 'ADC_CONFIG_EXTREFSEL_None'
