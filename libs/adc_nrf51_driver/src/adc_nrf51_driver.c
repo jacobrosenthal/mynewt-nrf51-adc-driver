@@ -91,6 +91,8 @@ adc_nrf51_driver_init(void)
     return adc_nrf51_driver_adc;
 }
 
+//instead of trying to pass a pointer to this read funtion often this helper function will
+//be just rebuilt as its based on the os level adc
 int
 adc_nrf51_driver_read(void *buffer, int buffer_len)
 {
