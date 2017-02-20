@@ -40,7 +40,6 @@ Finally call enable the adc and trigger samples presumably as part of a new task
 // /* ADC Task settings */
 #define ADC_TASK_PRIO           5
 #define ADC_STACK_SIZE          (OS_STACK_ALIGN(32))
-struct os_eventq adc_evq;
 struct os_task adc_task;
 bssnz_t os_stack_t adc_stack[ADC_STACK_SIZE];
 
@@ -85,8 +84,6 @@ int
 main(void)
 {
 ...
-    os_eventq_init(&adc_evq);
-
     /* Create the ADC reader task.  
      * All sensor operations are performed in this task.
      */
