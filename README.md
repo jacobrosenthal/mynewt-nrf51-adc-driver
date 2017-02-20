@@ -52,7 +52,7 @@ adc_read_event(struct adc_dev *dev, void *arg, uint8_t etype,
     int value;
     int rc;
 
-    value = adc_read(buffer, buffer_len);
+    value = adc_nrf51_driver_read(buffer, buffer_len);
     if (value >= 0) {
         console_printf("Got %d\n", value);
     } else {
@@ -70,7 +70,7 @@ adc_task_handler(void *unused)
     struct adc_dev *adc;
     int rc;
     /* ADC init */
-    adc = adc_init();
+    adc = adc_nrf51_driver_init();
     rc = adc_event_handler_set(adc, adc_read_event, (void *) NULL);
     assert(rc == 0);
 

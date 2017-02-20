@@ -20,16 +20,16 @@
 
 #define ADC_NUMBER_SAMPLES MYNEWT_VAL(ADC_0_SAMPLES)
 
-uint8_t *sample_buffer1;
+static uint8_t *sample_buffer1;
 
 //I don't like that his adc holds a reference to adc and passes it out
 //If you're passing it out, then pass it back into adc_read
 //also you can look it up with os_dev_lookup
-struct adc_dev *adc;
+static struct adc_dev *adc_nrf51_driver_adc;
 
-struct adc_dev os_bsp_adc0;
+static struct adc_dev os_bsp_adc0;
 
-nrf_drv_adc_config_t os_bsp_adc0_config = {
+static nrf_drv_adc_config_t os_bsp_adc0_config = {
     .interrupt_priority = MYNEWT_VAL(ADC_0_INTERRUPT_PRIORITY),
 };
 //dont understand why there are two configurations, one for create and one for open
@@ -37,7 +37,7 @@ nrf_drv_adc_config_t os_bsp_adc0_config = {
 // nrf_drv_adc_config_t adc_config = NRF_DRV_ADC_DEFAULT_CONFIG;
 
 // nrf_drv_adc_channel_t cc = NRF_DRV_ADC_DEFAULT_CHANNEL(MYNEWT_VAL(ADC_0_INPUT));
-nrf_drv_adc_channel_t cc = {{{
+static nrf_drv_adc_channel_t cc = {{{
     .resolution           = MYNEWT_VAL(ADC_0_RESOLUTION),
     .input                = MYNEWT_VAL(ADC_0_SCALING),
     .reference            = MYNEWT_VAL(ADC_0_REFERENCE),
@@ -45,8 +45,8 @@ nrf_drv_adc_channel_t cc = {{{
     .external_reference   = MYNEWT_VAL(ADC_0_EXTERNAL_REFERENCE),
 }}, NULL};
 
-void *
-adc_init(void)
+void*
+adc_nrf51_driver_init(void)
 {
     int rc;
 
@@ -56,24 +56,24 @@ adc_init(void)
             nrf51_adc_dev_init, &os_bsp_adc0_config);
     assert(rc == 0);
 
-    adc = (struct adc_dev *) os_dev_open("adc0", 0, &os_bsp_adc0_config);
-    assert(adc != NULL);
+    adc_nrf51_driver_adc = (struct adc_dev *) os_dev_open("adc0", 0, &os_bsp_adc0_config);
+    assert(adc_nrf51_driver_adc != NULL);
 
-    rc = adc_chan_config(adc, 0, &cc);
+    rc = adc_chan_config(adc_nrf51_driver_adc, 0, &cc);
     assert(rc == 0);
 
     //why not use calloc instead?
-    sample_buffer1 = malloc(adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
-    memset(sample_buffer1, 0, adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    sample_buffer1 = malloc(adc_buf_size(adc_nrf51_driver_adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    memset(sample_buffer1, 0, adc_buf_size(adc_nrf51_driver_adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
     //nrf51 currently only supports one buffer
-    adc_buf_set(adc, sample_buffer1, NULL,
-        adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    adc_buf_set(adc_nrf51_driver_adc, sample_buffer1, NULL,
+        adc_buf_size(adc_nrf51_driver_adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
 
-    return adc;
+    return adc_nrf51_driver_adc;
 }
 
 int
-adc_read(void *buffer, int buffer_len)
+adc_nrf51_driver_read(void *buffer, int buffer_len)
 {
     int i;
     int adc_result;
@@ -81,13 +81,13 @@ adc_read(void *buffer, int buffer_len)
     int rc;
 
     for (i = 0; i < ADC_NUMBER_SAMPLES; i++) {
-        rc = adc_buf_read(adc, buffer, buffer_len, i, &adc_result);
+        rc = adc_buf_read(adc_nrf51_driver_adc, buffer, buffer_len, i, &adc_result);
         if (rc != 0) {
             goto err;
         }
-        my_result_mv = adc_result_mv(adc, 0, adc_result);
+        my_result_mv = adc_result_mv(adc_nrf51_driver_adc, 0, adc_result);
     }        
-    adc_buf_release(adc, buffer, buffer_len);
+    adc_buf_release(adc_nrf51_driver_adc, buffer, buffer_len);
     return my_result_mv;
 err:
     return (rc);
