@@ -69,7 +69,7 @@ adc_task_handler(void *unused)
     struct adc_dev *adc;
     int rc;
     /* ADC init */
-    adc = adc_nrf51_driver_init();
+    adc = adc_nrf51_driver_get();
     rc = adc_event_handler_set(adc, adc_read_event, (void *) NULL);
     assert(rc == 0);
 

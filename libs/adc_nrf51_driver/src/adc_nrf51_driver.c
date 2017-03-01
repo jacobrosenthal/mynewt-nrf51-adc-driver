@@ -64,7 +64,14 @@ static nrf_drv_adc_channel_t cc = {{{
     .external_reference   = MYNEWT_VAL(ADC_0_EXTERNAL_REFERENCE),
 }}, NULL};
 
+
 void*
+adc_nrf51_driver_get(void)
+{
+    return adc_nrf51_driver_adc;
+}
+
+void
 adc_nrf51_driver_init(void)
 {
     int rc;
@@ -87,8 +94,6 @@ adc_nrf51_driver_init(void)
     //nrf51 currently only supports one buffer
     adc_buf_set(adc_nrf51_driver_adc, sample_buffer1, NULL,
         adc_buf_size(adc_nrf51_driver_adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
-
-    return adc_nrf51_driver_adc;
 }
 
 //instead of trying to pass a pointer to this read funtion often this helper function will

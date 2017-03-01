@@ -21,3 +21,6 @@ pkg.name: libs/adc_nrf51_driver
 pkg.deps:
     - "@apache-mynewt-core/hw/hal"
     - "@mynewt_nordic/hw/drivers/adc/adc_nrf51"
+
+pkg.init:
+    adc_nrf51_driver_init: 101
